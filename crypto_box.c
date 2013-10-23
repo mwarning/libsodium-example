@@ -7,9 +7,6 @@
 #include <sodium.h>
 //#include "nacl/crypto_box.h" //for libnacl
 
-/*
-* gcc main.c -o main -lsodium
-*/
 
 typedef unsigned char UCHAR;
 
