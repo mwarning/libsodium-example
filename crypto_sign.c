@@ -11,7 +11,7 @@
 
 int sign(uint8_t sm[], const uint8_t m[], const int mlen, const uint8_t sk[]) {
 	unsigned long long smlen;
-	
+
 	if( crypto_sign(sm,&smlen, m, mlen, sk) == 0) {
 		return smlen;
 	} else {

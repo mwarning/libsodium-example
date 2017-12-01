@@ -34,7 +34,7 @@ int crypto_box_recover_public_key(uint8_t secret_key[]) {
 	char phexbuf[2*crypto_sign_PUBLICKEYBYTES+1];
 
 	crypto_scalarmult_curve25519_base( public_key, secret_key );
-	
+
 	printf("recovered public_key: %s\n", to_hex(phexbuf, public_key, crypto_sign_PUBLICKEYBYTES));
 }
 
@@ -46,10 +46,10 @@ void crypto_box_example()
 	char shexbuf[2*crypto_box_SECRETKEYBYTES+1];
 
 	crypto_box_keypair(public_key, secret_key);
-	
+
 	printf("public_key: %s\n", to_hex(phexbuf, public_key, crypto_box_PUBLICKEYBYTES));
 	printf("secret_key: %s\n", to_hex(shexbuf, secret_key,  crypto_box_SECRETKEYBYTES));
-	
+
 	crypto_box_recover_public_key(secret_key);
 }
 
@@ -58,7 +58,7 @@ int crypto_sign_recover_public_key(uint8_t secret_key[]) {
 	char phexbuf[2*crypto_sign_PUBLICKEYBYTES+1];
 
 	memcpy(public_key, secret_key+crypto_sign_PUBLICKEYBYTES, crypto_sign_PUBLICKEYBYTES);
-	
+
 	printf("recovered public_key: %s\n", to_hex(phexbuf, public_key, crypto_sign_PUBLICKEYBYTES));
 }
 
@@ -71,10 +71,10 @@ void crypto_sign_example()
 	char shexbuf[2*crypto_sign_SECRETKEYBYTES+1];
 
 	crypto_sign_keypair(public_key, secret_key);
-	
+
 	printf("public_key: %s\n", to_hex(phexbuf, public_key, crypto_sign_PUBLICKEYBYTES));
 	printf("secret_key: %s\n", to_hex(shexbuf, secret_key,  crypto_sign_SECRETKEYBYTES));
-	
+
 	crypto_sign_recover_public_key(secret_key);
 }
 
