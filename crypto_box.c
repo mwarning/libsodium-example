@@ -3,14 +3,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <fcntl.h>
+#include <unistd.h>
+#include <stdint.h>
 
 #include <sodium.h>
 //#include "nacl/crypto_box.h" //for libnacl
 
 
-typedef unsigned char UCHAR;
-
-void randombytes(UCHAR buffer[], unsigned long long size)
+void randombytes(uint8_t buffer[], unsigned long long size)
 {
 	int fd;
 
@@ -26,10 +26,10 @@ void randombytes(UCHAR buffer[], unsigned long long size)
 	}
 }
 
-char* to_hex( char hex[], const UCHAR bin[], size_t length )
+char* to_hex( char hex[], const uint8_t bin[], size_t length )
 {
 	int i;
-	UCHAR *p0 = (UCHAR *)bin;
+	uint8_t *p0 = (uint8_t *)bin;
 	char *p1 = hex;
 
 	for( i = 0; i < length; i++ ) {
@@ -41,7 +41,7 @@ char* to_hex( char hex[], const UCHAR bin[], size_t length )
 	return hex;
 }
 
-int is_zero( const UCHAR *data, int len )
+int is_zero( const uint8_t *data, int len )
 {
 	int i;
 	int rc;
@@ -56,10 +56,10 @@ int is_zero( const UCHAR *data, int len )
 
 #define MAX_MSG_SIZE 1400
 
-int encrypt(UCHAR encrypted[], const UCHAR pk[], const UCHAR sk[], const UCHAR nonce[], const UCHAR plain[], int length)
+int encrypt(uint8_t encrypted[], const uint8_t pk[], const uint8_t sk[], const uint8_t nonce[], const uint8_t plain[], int length)
 {
-	UCHAR temp_plain[MAX_MSG_SIZE];
-	UCHAR temp_encrypted[MAX_MSG_SIZE];
+	uint8_t temp_plain[MAX_MSG_SIZE];
+	uint8_t temp_encrypted[MAX_MSG_SIZE];
 	int rc;
 
 	printf("encrypt\n", length);
@@ -86,10 +86,10 @@ int encrypt(UCHAR encrypted[], const UCHAR pk[], const UCHAR sk[], const UCHAR n
 	return crypto_box_ZEROBYTES + length - crypto_box_BOXZEROBYTES;
 }
 
-int decrypt(UCHAR plain[], const UCHAR pk[], const UCHAR sk[], const UCHAR nonce[], const UCHAR encrypted[], int length)
+int decrypt(uint8_t plain[], const uint8_t pk[], const uint8_t sk[], const uint8_t nonce[], const uint8_t encrypted[], int length)
 {
-	UCHAR temp_encrypted[MAX_MSG_SIZE];
-	UCHAR temp_plain[MAX_MSG_SIZE];
+	uint8_t temp_encrypted[MAX_MSG_SIZE];
+	uint8_t temp_plain[MAX_MSG_SIZE];
 	int rc;
 
 	printf("decrypt\n");
@@ -118,8 +118,8 @@ int decrypt(UCHAR plain[], const UCHAR pk[], const UCHAR sk[], const UCHAR nonce
 
 typedef struct {
 	char* name;
-	UCHAR public_key[crypto_box_PUBLICKEYBYTES];
-	UCHAR secret_key[crypto_box_SECRETKEYBYTES];
+	uint8_t public_key[crypto_box_PUBLICKEYBYTES];
+	uint8_t secret_key[crypto_box_SECRETKEYBYTES];
 } User;
 
 User *new_user(char* name)
@@ -153,7 +153,7 @@ int main( int argc, char **argv )
 	User *eve = new_user("eve");
 	char *msg = "Hello";
 
-	UCHAR nonce[crypto_box_NONCEBYTES];
+	uint8_t nonce[crypto_box_NONCEBYTES];
 	randombytes(nonce, crypto_box_NONCEBYTES);
 
 	print_user(bob);
@@ -161,14 +161,14 @@ int main( int argc, char **argv )
 
 	printf("message: %s\n", msg);
 
-	UCHAR encrypted[1000];
+	uint8_t encrypted[1000];
 	rc = encrypt(encrypted, bob->public_key, eve->secret_key, nonce, msg, strlen(msg));
 	if( rc < 0 ) {
 		return 1;
 	}
 	printf("encrypted: %s\n", to_hex(hexbuf, encrypted, rc ));
 
-	UCHAR decrypted[1000];
+	uint8_t decrypted[1000];
 	rc = decrypt(decrypted, eve->public_key, bob->secret_key, nonce, encrypted, rc);
 	if( rc < 0 ) {
 		return 1;
